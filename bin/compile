@@ -1,0 +1,27 @@
+#!/bin/sh
+
+indent() {
+  sed -u 's/^/       /'
+}
+
+echo "-----> Install winrar"
+BUILD_DIR=$1
+VENDOR_DIR="vendor"
+DOWNLOAD_URL="https://www.rarlab.com/rar/rarlinux-x64-5.6.b4.tar.gz"
+
+echo "DOWNLOAD_URL = " $DOWNLOAD_URL | indent
+
+cd $BUILD_DIR
+mkdir -p $VENDOR_DIR
+cd $VENDOR_DIR
+mkdir -p winrar
+cd winrar
+curl -L --silent $DOWNLOAD_URL | tar xz --strip-components=1
+
+echo "exporting PATH" | indent
+PROFILE_PATH="$BUILD_DIR/.profile.d/rar.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/winrar"' >> $PROFILE_PATH
+PROFILE_PATH="$BUILD_DIR/.profile.d/unrar.sh"
+mkdir -p $(dirname $PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/winrar"' >> $PROFILE_PATH
